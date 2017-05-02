@@ -1,0 +1,63 @@
+Given(/^I am on the Santander bank_agency_search_page$/) do
+  visit "https://www.santander.com.br/br/busca-de-agencia"
+  #visit "https://www.google.com"
+end
+
+When(/^I will search for a cep$/) do
+  thing = YAML.load_file('./data.yml')
+  within_frame(find(:xpath, "//iframe")) do
+	fill_in 'refCep', :with => thing['CEP']['BARUERI']
+  end
+  
+end
+
+Then(/^I will inform a number$/) do
+  within_frame(find(:xpath, "//iframe")) do
+	fill_in 'refNumero', :with => Faker::Number.number(2)
+  end
+end
+
+Then(/^I will click the search button$/) do
+  within_frame(find(:xpath, "//iframe")) do
+	find(:xpath, "//li[contains(text(),'Preenchimento obriga')]/following-sibling::li/a").click
+  end
+end
+
+Then(/^I will choose the first address listed$/) do
+  within_frame(find(:xpath, "//iframe")) do
+    #select('-23.4954996|-46.8734133', :from=>'refEndereco') 
+	#find('#refEndereco').find(:xpath, 'option[1]').click
+	#find('#refEndereco').find(:xpath, 'option[2]').click
+
+	find(:xpath, "//select[@id='refEndereco']").click
+	find(:xpath, "//select[@id='refEndereco']/option[2]").select_option
+
+	#within '#refEndereco' do
+		#	find(:xpath, "option[1]").click
+		#end
+	#	second_option = find(:xpath, "//*[@id='refEndereco']/option[2]").text
+	#	waitTime = 5
+		#sleep(waitTime.to_i)
+	##	puts second_option
+		#select(second_option, :from => 'refEndereco', match: :first)
+		#select(second_option, match: :first)
+	#end
+	#first(:xpath, "//option[text()='" + second_option + "']").select_option
+	#option = first('#refEndereco option').text
+	#puts option
+	#select option, from: 'refEndereco'
+	#find(:xpath, "//select[@id='refEndereco']").find(:xpath, "option[2]").select_option
+  end
+end
+
+Then(/^I will wait for (\d+) seconds btw$/) do |waitTime|
+  sleep(waitTime.to_i)
+end
+
+Then(/^I should see "([^"]*)"$/) do |expectedText|
+  page.should have_content(expectedText)
+end
+
+Then(/^I will wait for (\d+) seconds$/) do |waitTime|
+  sleep(waitTime.to_i)
+end
